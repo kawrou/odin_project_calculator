@@ -1,4 +1,4 @@
-let num1, num2, operator;
+let num1, num2, operator, display;
 
 const operate = (num1, num2, operator) => {
  switch (operator) {
