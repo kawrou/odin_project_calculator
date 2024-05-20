@@ -1,37 +1,45 @@
-let num1 = null,
- num2 = null,
- operator;
+import {
+ isOperator,
+ isOperand,
+ handleOperand,
+ handleOperator,
+ handleEqual,
+ handleClear,
+} from "./calc.js";
 
-let displayValue = 0; 
+let calculatorState = {
+ num1: "",
+ num2: "",
+ operator: "",
+ displayValue: "0",
+};
 
-const display = document.querySelector("#display")
+const display = document.querySelector("#display");
 const btns = document.querySelectorAll(".button");
 
 btns.forEach((btn) => {
  btn.addEventListener("click", (e) => {
-  updateDisplay(e.target.value);
+  handleButtonClick(e.target.value, calculatorState);
+  updateDisplay(calculatorState.displayValue);
  });
 });
 
-const updateDisplay = (value) => {
-  display.textContent=value; 
-}
-
-updateDisplay(displayValue); 
-
-const operate = (num1, num2, operator) => {
- switch (operator) {
-  case "+":
-   return num1 + num2;
-  case "-":
-   return num1 - num2;
-  case "*":
-   return num1 * num2;
-  case "/":
-   result = num1 / num2;
-   const pow = Math.pow(10, 7);
-   return Math.round(result * pow) / pow;
+const handleButtonClick = (value, state) => {
+ if (isOperator(value)) {
+  handleOperator(value, state);
+ } else if (isOperand(value)) {
+  handleOperand(value, state);
+ } else if (value === "=") {
+  handleEqual(state);
+ } else if (value === "clear") {
+  handleClear(state);
  }
 };
 
-module.exports = { operate };
+const updateDisplay = (value) => {
+ display.textContent = value;
+};
+
+updateDisplay(calculatorState.displayValue);
+
+// module.exports = { isOperator };

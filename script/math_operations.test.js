@@ -1,4 +1,4 @@
-const { operate } = require("./script.js");
+const { operate } = require("./math_operations.js");
 
 describe("Math functions", () => {
  describe("addition", () => {
