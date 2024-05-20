@@ -1,11 +1,12 @@
-const {
+import {
  isOperator,
  isOperand,
  handleOperand,
  handleOperator,
  handleEqual,
  handleClear,
-} = require("./helper_functions.js");
+ operate,
+} from "./calc.js";
 
 describe("helper functions", () => {
  describe("'is' handler functions", () => {
@@ -23,12 +24,19 @@ describe("helper functions", () => {
    ["1", true],
    [".", true],
    ["x", false],
+   ["-", true],
   ])("isOperand(%s) returns %s", (a, expected) => {
    expect(isOperand(a)).toBe(expected);
   });
  });
+
  describe("handleOperand:", () => {
-  test("updates num1 and displayValue", () => {
+  test.each([
+   ["1", "1"],
+   ["12", "12"],
+   ["-1", "-1"],
+	 ["1.1", "1.1"],
+  ])("can assign '%s' to num1 and displayValue", (input, expected) => {
    const calcState = {
     num1: "",
     num2: "",
@@ -36,50 +44,26 @@ describe("helper functions", () => {
     displayValue: "0",
    };
 
-   handleOperand("1", calcState);
-   expect(calcState.num1).toBe("1");
-   expect(calcState.displayValue).toBe("1");
+   handleOperand(input, calcState);
+   expect(calcState.num1).toBe(expected);
+   expect(calcState.displayValue).toBe(expected);
   });
 
-  test("updates num1 and displayValue with multiple numbers", () => {
+  test.each([
+   ["1", "1"],
+   ["12", "12"],
+   ["-1", "-1"],
+  ])("can assign '%s' to num2 and displayValue", (input, expected) => {
    const calcState = {
-    num1: "",
-    num2: "",
-    operator: "",
-    displayValue: "0",
-   };
-
-   handleOperand("1", calcState);
-   handleOperand("2", calcState);
-   expect(calcState.num1).toBe("12");
-   expect(calcState.displayValue).toBe("12");
-  });
-
-  test("updates num2 and displayValue", () => {
-   const calcState = {
-    num1: "1",
+    num1: "10",
     num2: "",
     operator: "+",
-    displayValue: "+",
+    displayValue: "10",
    };
 
-   handleOperand("2", calcState);
-   expect(calcState.num2).toBe("2");
-   expect(calcState.displayValue).toBe("2");
-  });
-
-  test("updates num2 and displayValue with multiple numbers", () => {
-   const calcState = {
-    num1: "1",
-    num2: "",
-    operator: "+",
-    displayValue: "+",
-   };
-
-   handleOperand("1", calcState);
-   handleOperand("2", calcState);
-   expect(calcState.num2).toBe("12");
-   expect(calcState.displayValue).toBe("12");
+   handleOperand(input, calcState);
+   expect(calcState.num2).toBe(expected);
+   expect(calcState.displayValue).toBe(expected);
   });
  });
 
@@ -137,8 +121,8 @@ describe("helper functions", () => {
 
    handleEqual(calcState);
    expect(calcState.num1).toBe("1");
-   expect(calcState.num2).toBeFalsy(); 
-   expect(calcState.operator).toBeFalsy(); 
+   expect(calcState.num2).toBeFalsy();
+   expect(calcState.operator).toBeFalsy();
    expect(calcState.displayValue).toBe("1");
   });
 
@@ -173,5 +157,63 @@ describe("helper functions", () => {
    expect(calcState.operator).toBe("");
    expect(calcState.displayValue).toBe("0");
   });
+ });
+});
+
+describe("Math functions", () => {
+ describe("addition", () => {
+  test.each([
+   ["1", "2", "+", 3],
+   ["2", "3", "+", 5],
+   ["3", "4", "+", 7],
+   ["1.2", "1.3", "+", 2.5],
+  ])("adds %s and %s with operator '%s' to equal %i", (a, b, c, expected) => {
+   expect(operate(a, b, c)).toBe(expected);
+  });
+ });
+
+ describe("subtraction", () => {
+  test.each([
+   ["3", "2", "-", 1],
+   ["6", "5", "-", 1],
+   ["3", "4", "-", -1],
+   ["100", "80", "-", 20],
+   ["3.5", "1.5", "-", 2],
+  ])(
+   "subtacts %s and %s with operator '%s' to equal %i",
+   (a, b, c, expected) => {
+    expect(operate(a, b, c)).toBe(expected);
+   }
+  );
+ });
+
+ describe("multiplcation", () => {
+  test.each([
+   ["2", "2", "*", 4],
+   ["3", "3", "*", 9],
+   ["4", "4", "*", 16],
+   ["25", "25", "*", 625],
+   ["2.2", "2.2", "*", 4.84],
+  ])(
+   "multiplies %s and %s with operator '%s' to equal %i",
+   (a, b, c, expected) => {
+    expect(operate(a, b, c)).toBe(expected);
+   }
+  );
+ });
+
+ describe("division", () => {
+  test.each([
+   ["4", "2", "/", 2],
+   ["15", "3", "/", 5],
+   ["25", "5", "/", 5],
+   ["80", "7", "/", 11.4285714],
+   ["5.1", "3.1", "/", 1.6451613],
+  ])(
+   "divides %s and %s with operator '%s' to equal %i",
+   (a, b, c, expected) => {
+    expect(operate(a, b, c)).toBe(expected);
+   }
+  );
  });
 });

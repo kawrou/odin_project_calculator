@@ -17,6 +17,19 @@ let calculatorState = {
 const display = document.querySelector("#display");
 const btns = document.querySelectorAll(".button");
 
+document.addEventListener("keydown", (e) => {
+ const key = e.key;
+ console.log(key);
+ if (/[0-9\+\-\*\/]/.test(key)) {
+  handleButtonClick(key, calculatorState);
+ } else if (key === "Enter") {
+  handleEqual(calculatorState);
+ } else if (key === "Escape") {
+  handleClear();
+ }
+ updateDisplay(calculatorState.displayValue);
+});
+
 btns.forEach((btn) => {
  btn.addEventListener("click", (e) => {
   handleButtonClick(e.target.value, calculatorState);
@@ -25,10 +38,10 @@ btns.forEach((btn) => {
 });
 
 const handleButtonClick = (value, state) => {
- if (isOperator(value)) {
-  handleOperator(value, state);
- } else if (isOperand(value)) {
+ if (isOperand(value)) {
   handleOperand(value, state);
+ } else if (isOperator(value)) {
+  handleOperator(value, state);
  } else if (value === "=") {
   handleEqual(state);
  } else if (value === "clear") {
@@ -37,9 +50,11 @@ const handleButtonClick = (value, state) => {
 };
 
 const updateDisplay = (value) => {
- display.textContent = value;
+ if (value === "/") {
+  display.textContent = "÷";
+ } else {
+  display.textContent = value;
+ }
 };
 
 updateDisplay(calculatorState.displayValue);
-
-// module.exports = { isOperator };

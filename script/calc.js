@@ -3,10 +3,14 @@ export const isOperator = (value) => {
 };
 
 export const isOperand = (value) => {
- return !isNaN(value) || value === ".";
+ return !isNaN(value) || value === "." || value === "-";
 };
 
 export const handleOperand = (value, state) => {
+ if (value === "." && state.displayValue.includes(".")) {
+  return;
+ }
+
  if (state.operator) {
   state.num2 += value;
   state.displayValue = state.num2;
@@ -51,9 +55,9 @@ export const handleClear = (state) => {
  state.displayValue = "0";
 };
 
-const operate = (num1, num2, operator) => {
- const a = parseInt(num1);
- const b = parseInt(num2);
+export const operate = (num1, num2, operator) => {
+ const a = parseFloat(num1);
+ const b = parseFloat(num2);
  switch (operator) {
   case "+":
    return a + b;
@@ -65,7 +69,7 @@ const operate = (num1, num2, operator) => {
    if (b === 0) {
     return "Don't divide by 0!";
    } else {
-    result = a / b;
+    const result = a / b;
     const pow = Math.pow(10, 7);
     return Math.round(result * pow) / pow;
    }
