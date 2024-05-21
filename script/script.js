@@ -5,6 +5,7 @@ import {
  handleOperator,
  handleEqual,
  handleClear,
+ handleSign, 
 } from "./calc.js";
 
 let calculatorState = {
@@ -34,10 +35,6 @@ document.addEventListener("keydown", (e) => {
 btns.forEach((btn) => {
  btn.addEventListener("click", (e) => {
   handleButtonClick(e.target.value, calculatorState);
-  // console.log("num1", calculatorState.num1);
-  // console.log("num2", calculatorState.num2);
-  // console.log("operator", calculatorState.operator);
-  // console.log("displayValue", calculatorState.displayValue);
   updateDisplay(calculatorState.displayValue);
  });
 });
@@ -51,6 +48,8 @@ if (isOperator(value)) {
   handleEqual(state);
  } else if (value === "clear") {
   handleClear(state);
+ } else if (value === "sign") {
+	handleSign(state); 
  }
 };
 

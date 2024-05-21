@@ -100,18 +100,33 @@ describe("Calculator App", () => {
    fireEvent.click(button2);
    fireEvent.click(buttonEqual);
    fireEvent.click(button2);
-   console.log(prettyDOM(document.body));
+
    expect(display).toHaveTextContent("2");
    expect(display).not.toHaveTextContent("32");
   });
  });
+
  test("should handle clear click", () => {
   const button1 = screen.getByText("1");
   const button2 = screen.getByText("2");
   const buttonClear = screen.getByText("AC");
+
   fireEvent.click(button1);
   fireEvent.click(button2);
   fireEvent.click(buttonClear);
+
   expect(display).toHaveTextContent("0");
+ });
+
+ describe("+/- button should", () => {
+  test.each([["3", "-3"]])("turn %s to %s", (operand, expected) => {
+   const button1 = screen.getByText(operand);
+   const buttonSign = screen.getByText("+/-");
+
+   fireEvent.click(button1);
+   fireEvent.click(buttonSign);
+
+   expect(display).toHaveTextContent(expected);
+  });
  });
 });

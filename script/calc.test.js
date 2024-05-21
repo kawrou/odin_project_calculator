@@ -5,6 +5,7 @@ import {
  handleOperator,
  handleEqual,
  handleClear,
+ handleSign, 
  operate,
 } from "./calc.js";
 
@@ -24,7 +25,7 @@ describe("helper functions", () => {
    ["1", true],
    [".", true],
    ["x", false],
-   ["-", true],
+   ["-", false],
   ])("isOperand(%s) returns %s", (a, expected) => {
    expect(isOperand(a)).toBe(expected);
   });
@@ -158,6 +159,19 @@ describe("helper functions", () => {
    expect(calcState.displayValue).toBe("0");
   });
  });
+
+ describe("handleSign:", () => {
+	test.each([["3", "-3"],["-3", "3"]])("turns %s to %s", (operand, expected) => {
+		const calcState = {
+			num1 : operand, 
+			displayValue: operand,
+		};
+
+		handleSign(calcState);
+		expect(calcState.num1).toBe(expected);
+		expect(calcState.displayValue).toBe(expected); 
+	})
+ })
 });
 
 describe("Math functions", () => {
@@ -187,13 +201,13 @@ describe("Math functions", () => {
   );
  });
 
- describe("multiplcation", () => {
+ describe("multiplication", () => {
   test.each([
-   ["2", "2", "*", 4],
-   ["3", "3", "*", 9],
-   ["4", "4", "*", 16],
-   ["25", "25", "*", 625],
-   ["2.2", "2.2", "*", 4.84],
+   ["2", "2", "x", 4],
+   ["3", "3", "x", 9],
+   ["4", "4", "x", 16],
+   ["25", "25", "x", 625],
+   ["2.2", "2.2", "x", 4.84],
   ])(
    "multiplies %s and %s with operator '%s' to equal %i",
    (a, b, c, expected) => {

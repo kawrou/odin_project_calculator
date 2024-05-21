@@ -11,9 +11,9 @@ export const handleOperand = (value, state) => {
   return;
  }
 
- if (!state.operator && state.isCalculated){
-	state.num1 = ""; 
-	state.isCalculated = false; 
+ if (!state.operator && state.isCalculated) {
+  state.num1 = "";
+  state.isCalculated = false;
  }
 
  if (state.operator) {
@@ -27,9 +27,9 @@ export const handleOperand = (value, state) => {
 
 export const handleOperator = (value, state) => {
  if (state.num1 === "" && value == "-") {
-	state.num1 += value;
-	state.displayValue = state.num1
- } else {
+  state.num1 += value;
+  state.displayValue = state.num1;
+ } else if (state.num1) {
   state.operator = value;
   state.displayValue = state.operator;
  }
@@ -51,7 +51,7 @@ export const handleEqual = (state) => {
 
   state.num2 = "";
   state.operator = "";
-	state.isCalculated = true; 
+  state.isCalculated = true;
  }
 };
 
@@ -62,6 +62,15 @@ export const handleClear = (state) => {
  state.displayValue = "0";
 };
 
+export const handleSign = (state) => {
+ if (state.num1[0] === "-") {
+  state.num1 = state.num1.substring(1);
+  state.displayValue = state.num1;
+ } else {
+  state.num1 = "-" + state.num1;
+  state.displayValue = state.num1;
+ }
+};
 export const operate = (num1, num2, operator) => {
  const a = parseFloat(num1);
  const b = parseFloat(num2);
@@ -71,16 +80,18 @@ export const operate = (num1, num2, operator) => {
   case "-":
    return a - b;
   case "x":
-   return a * b;
+   return roundTo(a * b, 7);
   case "/":
    if (b === 0) {
     return "Don't divide by 0!";
    } else {
-    const result = a / b;
-    const pow = Math.pow(10, 7);
-    return Math.round(result * pow) / pow;
+		return (roundTo(a/b, 7))
    }
   default:
    return;
  }
+
+ function roundTo(value, decimals) {
+  return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+}
 };
