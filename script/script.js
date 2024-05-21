@@ -12,6 +12,7 @@ let calculatorState = {
  num2: "",
  operator: "",
  displayValue: "0",
+ isCalculated: false, 
 };
 
 const display = document.querySelector("#display");
@@ -33,15 +34,19 @@ document.addEventListener("keydown", (e) => {
 btns.forEach((btn) => {
  btn.addEventListener("click", (e) => {
   handleButtonClick(e.target.value, calculatorState);
+  // console.log("num1", calculatorState.num1);
+  // console.log("num2", calculatorState.num2);
+  // console.log("operator", calculatorState.operator);
+  // console.log("displayValue", calculatorState.displayValue);
   updateDisplay(calculatorState.displayValue);
  });
 });
 
 const handleButtonClick = (value, state) => {
- if (isOperand(value)) {
-  handleOperand(value, state);
- } else if (isOperator(value)) {
+if (isOperator(value)) {
   handleOperator(value, state);
+ } else if (isOperand(value)) {
+  handleOperand(value, state);
  } else if (value === "=") {
   handleEqual(state);
  } else if (value === "clear") {
@@ -52,7 +57,9 @@ const handleButtonClick = (value, state) => {
 const updateDisplay = (value) => {
  if (value === "/") {
   display.textContent = "÷";
- } else {
+ } else if (value === "x"){
+	display.textContent = "×"
+ }else {
   display.textContent = value;
  }
 };

@@ -3,12 +3,17 @@ export const isOperator = (value) => {
 };
 
 export const isOperand = (value) => {
- return !isNaN(value) || value === "." || value === "-";
+ return !isNaN(value) || value === ".";
 };
 
 export const handleOperand = (value, state) => {
  if (value === "." && state.displayValue.includes(".")) {
   return;
+ }
+
+ if (!state.operator && state.isCalculated){
+	state.num1 = ""; 
+	state.isCalculated = false; 
  }
 
  if (state.operator) {
@@ -21,8 +26,9 @@ export const handleOperand = (value, state) => {
 };
 
 export const handleOperator = (value, state) => {
- if (state.num1 === "") {
-  return;
+ if (state.num1 === "" && value == "-") {
+	state.num1 += value;
+	state.displayValue = state.num1
  } else {
   state.operator = value;
   state.displayValue = state.operator;
@@ -45,6 +51,7 @@ export const handleEqual = (state) => {
 
   state.num2 = "";
   state.operator = "";
+	state.isCalculated = true; 
  }
 };
 
@@ -63,7 +70,7 @@ export const operate = (num1, num2, operator) => {
    return a + b;
   case "-":
    return a - b;
-  case "*":
+  case "x":
    return a * b;
   case "/":
    if (b === 0) {
